@@ -833,21 +833,27 @@ const App = () => {
 
                 {simStep && (
                   <g
-                    className="transition-all duration-700 ease-in-out"
+                    key={`${simStep.index}-${simStep.phase}`}
+                    className="transition-all duration-1000 ease-in-out"
                     transform={
-                      simStep.phase === "response"
+                      simStep.phase === "data"
                         ? `translate(${simStep.path[simStep.index + 1]?.x}, ${simStep.path[simStep.index + 1]?.y})`
                         : `translate(${simStep.path[simStep.index].x}, ${simStep.path[simStep.index].y})`
                     }
                     style={
                       simStep.phase === "response"
                         ? {
+                            '--start-x': `${simStep.path[simStep.index + 1]?.x - simStep.path[simStep.index].x}px`,
+                            '--start-y': `${simStep.path[simStep.index + 1]?.y - simStep.path[simStep.index].y}px`,
+                          }
+                        : simStep.phase === "data"
+                        ? {
                             '--start-x': `${simStep.path[simStep.index].x - simStep.path[simStep.index + 1]?.x}px`,
                             '--start-y': `${simStep.path[simStep.index].y - simStep.path[simStep.index + 1]?.y}px`,
                           }
                         : {}
                     }
-                    className={simStep.phase === "response" ? "animate-broadcast-packet" : ""}
+                    className={simStep.phase !== "discovery" ? "animate-broadcast-packet" : ""}
                   >
                     <circle
                       r="22"
@@ -858,7 +864,7 @@ const App = () => {
                     <circle
                       r="14"
                       fill={simStep.phase === "data" ? "#16a34a" : "#eab308"}
-                      className="shadow-2xl border-2 border-white transition-colors duration-500"
+                      className="shadow-2xl border-2 border-white"
                     />
                     <foreignObject x="-10" y="-10" width="20" height="20">
                       <div className="flex items-center justify-center h-full text-white pointer-events-none">
