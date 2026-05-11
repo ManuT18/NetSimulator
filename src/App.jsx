@@ -24,6 +24,65 @@ import {
   Move,
 } from "lucide-react";
 
+const osiLayers = [
+  {
+    num: 1,
+    name: "Física",
+    icon: Zap,
+    color: "text-amber-600",
+    bg: "bg-amber-50",
+    desc: "Se encarga de las conexiones físicas: cables, conectores y la transmisión de bits (señales eléctricas o de luz).",
+  },
+  {
+    num: 2,
+    name: "Enlace de Datos",
+    icon: ShieldCheck,
+    color: "text-teal-600",
+    bg: "bg-teal-50",
+    desc: "Direccionamiento físico (MAC) y detección de errores. Prepara el paquete para el medio físico (Trama).",
+  },
+  {
+    num: 3,
+    name: "Red",
+    icon: Network,
+    color: "text-purple-600",
+    bg: "bg-purple-50",
+    desc: "Determinación de ruta y direccionamiento lógico (IP). Aquí es donde operan los Routers.",
+  },
+  {
+    num: 4,
+    name: "Transporte",
+    icon: Activity,
+    color: "text-blue-600",
+    bg: "bg-blue-50",
+    desc: "Conexión extremo a extremo y control de flujo. Protocolos como TCP (confiable) y UDP (rápido).",
+  },
+  {
+    num: 5,
+    name: "Sesión",
+    icon: Info,
+    color: "text-indigo-600",
+    bg: "bg-indigo-50",
+    desc: "Mantiene y controla el enlace entre dos computadores que están transmitiendo datos.",
+  },
+  {
+    num: 6,
+    name: "Presentación",
+    icon: Cpu,
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
+    desc: "Traducción, cifrado y compresión de datos para que la capa de aplicación los entienda.",
+  },
+  {
+    num: 7,
+    name: "Aplicación",
+    icon: Monitor,
+    color: "text-rose-600",
+    bg: "bg-rose-50",
+    desc: "Interfaz directa con el usuario (Navegador, Email). Protocolos como HTTP, FTP, DNS.",
+  },
+];
+
 const App = () => {
   const [nodes, setNodes] = useState([
     {
