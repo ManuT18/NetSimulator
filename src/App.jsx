@@ -581,6 +581,7 @@ const App = () => {
                   const t = nodes.find((n) => n.id === link.target);
                   if (!s || !t) return null;
 
+                  const isLinkActive = selectedNode && (link.source === selectedNode.id || link.target === selectedNode.id);
                   const { sIP, tIP, subnet } = getLinkIPs(link, nodes);
                   const midX = (s.x + t.x) / 2;
                   const midY = (s.y + t.y) / 2;
@@ -591,48 +592,47 @@ const App = () => {
                   const p2y = t.y + (s.y - t.y) * 0.25;
 
                   return (
-                    <g key={link.id}>
+                    <g key={link.id} className="transition-opacity duration-300" style={{ opacity: !selectedNode || isLinkActive ? 1 : 0.2 }}>
                       <line
                         x1={s.x}
                         y1={s.y}
                         x2={t.x}
                         y2={t.y}
                         stroke="#cbd5e1"
-                        strokeWidth="4"
+                        strokeWidth="3"
                         strokeLinecap="round"
                         className="pointer-events-none"
                       />
                       {subnet && (
-                        <g transform={`translate(${midX}, ${midY})`}>
+                        <g transform={`translate(${midX}, ${midY})`} className="transition-opacity duration-500" style={{ opacity: isLinkActive ? 1 : 0.4 }}>
                           <rect
-                            x="-45"
-                            y="-9"
-                            width="90"
-                            height="18"
-                            rx="5"
+                            x="-40"
+                            y="-8"
+                            width="80"
+                            height="16"
+                            rx="4"
                             fill="white"
                             stroke="#e2e8f0"
-                            strokeWidth="1.5"
-                            className="shadow-sm"
+                            strokeWidth="1"
                           />
                           <text
                             textAnchor="middle"
-                            y="3.5"
-                            fontSize="8.5"
-                            fontWeight="900"
-                            fill="#64748b"
-                            className="uppercase tracking-tight"
+                            y="3"
+                            fontSize="8"
+                            fontWeight="800"
+                            fill="#94a3b8"
+                            className="uppercase tracking-widest"
                           >
                             {subnet}
                           </text>
                         </g>
                       )}
-                      <g transform={`translate(${p1x}, ${p1y})`}>
+                      <g transform={`translate(${p1x}, ${p1y})`} className="transition-opacity duration-500" style={{ opacity: isLinkActive ? 1 : 0 }}>
                         <rect
-                          x="-38"
-                          y="-8.5"
-                          width="76"
-                          height="17"
+                          x="-35"
+                          y="-8"
+                          width="70"
+                          height="16"
                           rx="4"
                           fill="#eff6ff"
                           stroke="#bfdbfe"
@@ -641,20 +641,20 @@ const App = () => {
                         <text
                           textAnchor="middle"
                           y="3"
-                          fontSize="9"
-                          fontWeight="900"
-                          fill="#2563eb"
+                          fontSize="8.5"
+                          fontWeight="800"
+                          fill="#3b82f6"
                           fontFamily="monospace"
                         >
                           {sIP}
                         </text>
                       </g>
-                      <g transform={`translate(${p2x}, ${p2y})`}>
+                      <g transform={`translate(${p2x}, ${p2y})`} className="transition-opacity duration-500" style={{ opacity: isLinkActive ? 1 : 0 }}>
                         <rect
-                          x="-38"
-                          y="-8.5"
-                          width="76"
-                          height="17"
+                          x="-35"
+                          y="-8"
+                          width="70"
+                          height="16"
                           rx="4"
                           fill="#eff6ff"
                           stroke="#bfdbfe"
@@ -663,9 +663,9 @@ const App = () => {
                         <text
                           textAnchor="middle"
                           y="3"
-                          fontSize="9"
-                          fontWeight="900"
-                          fill="#2563eb"
+                          fontSize="8.5"
+                          fontWeight="800"
+                          fill="#3b82f6"
                           fontFamily="monospace"
                         >
                           {tIP}
@@ -677,7 +677,7 @@ const App = () => {
                         x2={t.x}
                         y2={t.y}
                         stroke="transparent"
-                        strokeWidth="25"
+                        strokeWidth="20"
                         className={`cursor-pointer transition-all ${mode === "delete-link" ? "hover:stroke-red-500/10" : ""}`}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -696,6 +696,7 @@ const App = () => {
                     onMouseDown={(e) => handleNodeEvent(e, node)}
                     onClick={(e) => e.stopPropagation()}
                     className="cursor-pointer group"
+                    style={{ opacity: !selectedNode || selectedNode.id === node.id ? 1 : 0.4 }}
                   >
                     {(selectedNode?.id === node.id ||
                       simSource?.id === node.id) && (
@@ -705,15 +706,15 @@ const App = () => {
                         stroke={
                           selectedNode?.id === node.id ? "#2563eb" : "#16a34a"
                         }
-                        strokeWidth="3"
+                        strokeWidth="2"
                         strokeDasharray="6 6"
-                        className="animate-[spin_20s_linear_infinite] opacity-30"
+                        className="animate-spin-slow opacity-40"
                       />
                     )}
                     <circle
                       r="42"
                       fill={node.type === "pc" ? "#2563eb" : "#9333ea"}
-                      className="shadow-2xl transition-all duration-300 group-hover:scale-105"
+                      className="shadow-xl transition-all duration-300 group-hover:scale-105"
                     />
                     <foreignObject x="-22" y="-22" width="44" height="44">
                       <div className="flex items-center justify-center h-full text-white pointer-events-none">
@@ -728,18 +729,20 @@ const App = () => {
                       <text
                         textAnchor="middle"
                         fill="#0f172a"
-                        className="text-[15px] font-black uppercase tracking-tight"
+                        className="text-[14px] font-black uppercase tracking-tight"
                       >
                         {node.name}
                       </text>
-                      <text
-                        y="18"
-                        textAnchor="middle"
-                        fill="#94a3b8"
-                        className="text-[11px] font-mono font-black uppercase"
-                      >
-                        {node.mac}
-                      </text>
+                      {selectedNode?.id === node.id && (
+                        <text
+                          y="18"
+                          textAnchor="middle"
+                          fill="#94a3b8"
+                          className="text-[10px] font-mono font-bold uppercase animate-in fade-in slide-in-from-top-1 duration-300"
+                        >
+                          {node.mac}
+                        </text>
+                      )}
                     </g>
                   </g>
                 ))}
