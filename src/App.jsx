@@ -772,48 +772,48 @@ const App = () => {
           </main>
 
           {simStep && (
-            <section className="h-60 bg-white border-t-4 border-green-500 shadow-2xl z-40 flex flex-col animate-in slide-in-from-bottom duration-500 shrink-0">
-              <div className="flex items-center justify-between px-8 py-2 border-b border-slate-100 bg-green-50/20">
+            <section className="h-52 bg-white border-t-4 border-green-500 shadow-2xl z-40 flex flex-col animate-in slide-in-from-bottom duration-500 shrink-0">
+              <div className="flex items-center justify-between px-8 py-2 border-b border-slate-100 bg-green-50/10">
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-green-600 animate-pulse"></div>
-                    <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">
-                      Analizador
+                    <div className="w-2 h-2 rounded-full bg-green-600 animate-pulse"></div>
+                    <span className="text-[9px] font-black text-green-700 uppercase tracking-widest">
+                      Analizador de Tráfico
                     </span>
                   </div>
-                  <div className="h-4 w-px bg-slate-200"></div>
-                  <p className="text-slate-900 font-black text-sm uppercase tracking-tight">
+                  <div className="h-3 w-px bg-slate-200"></div>
+                  <p className="text-slate-900 font-black text-[12px] uppercase tracking-tight">
                     Salto {simStep.index + 1} de {simStep.path.length} •{" "}
                     <span className="text-blue-600">
-                      {simStep.path[simStep.index].name}
+                      {simStep.path[simStep.index].name} ({simStep.path[simStep.index].type.toUpperCase()})
                     </span>
                   </p>
                 </div>
                 <button
                   onClick={() => setSimStep(null)}
-                  className="p-1.5 hover:bg-slate-200 rounded-full transition-colors text-slate-400"
+                  className="p-1 hover:bg-slate-100 rounded-full transition-colors text-slate-400"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               </div>
 
-              <div className="flex-1 flex items-center justify-between px-8 gap-8 overflow-hidden">
-                <div className="flex-1 grid grid-cols-2 gap-6 py-2">
-                  <div className="bg-purple-50/50 p-3 rounded-2xl border border-purple-100 relative">
+              <div className="flex-1 flex items-center justify-between px-8 gap-6 overflow-hidden">
+                <div className="flex-1 grid grid-cols-2 gap-4 py-3">
+                  <div className="bg-purple-50/40 p-2.5 rounded-2xl border border-purple-100/50 relative">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="p-1 bg-purple-600 text-white rounded-md">
-                        <Network size={12} />
+                        <Network size={10} />
                       </div>
-                      <h6 className="text-[9px] font-black uppercase text-purple-600 tracking-widest">
-                        CAPA 3 (IP)
+                      <h6 className="text-[8px] font-black uppercase text-purple-600 tracking-widest">
+                        Capa 3 • Red (IP)
                       </h6>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <span className="text-[8px] font-black text-slate-400 uppercase block">
+                        <span className="text-[7px] font-black text-slate-400 uppercase block">
                           Origen
                         </span>
-                        <span className="text-[12px] font-mono font-black text-purple-900 truncate">
+                        <span className="text-[11px] font-mono font-black text-purple-900">
                           {
                             getLinkIPs(
                               links.find(
@@ -827,10 +827,10 @@ const App = () => {
                         </span>
                       </div>
                       <div>
-                        <span className="text-[8px] font-black text-slate-400 uppercase block">
+                        <span className="text-[7px] font-black text-slate-400 uppercase block">
                           Destino
                         </span>
-                        <span className="text-[12px] font-mono font-black text-purple-900 truncate">
+                        <span className="text-[11px] font-mono font-black text-purple-900">
                           {
                             getLinkIPs(
                               links.find(
@@ -848,52 +848,61 @@ const App = () => {
                     </div>
                   </div>
 
-                  <div className="bg-teal-50/50 p-3 rounded-2xl border border-teal-100 relative">
+                  <div className="bg-teal-50/40 p-2.5 rounded-2xl border border-teal-100/50 relative">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="p-1 bg-teal-600 text-white rounded-md">
-                        <Layers size={12} />
+                        <Layers size={10} />
                       </div>
-                      <h6 className="text-[9px] font-black uppercase text-teal-600 tracking-widest">
-                        CAPA 2 (MAC)
+                      <h6 className="text-[8px] font-black uppercase text-teal-600 tracking-widest">
+                        Capa 2 • Enlace (MAC)
                       </h6>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <span className="text-[8px] font-black text-slate-400 uppercase block">
-                          SRC MAC
+                        <span className="text-[7px] font-black text-slate-400 uppercase block">
+                          Source MAC
                         </span>
-                        <span className="text-[11px] font-mono font-black text-teal-900 truncate">
+                        <span className="text-[11px] font-mono font-black text-teal-900">
                           {simStep.path[simStep.index].mac.slice(-8)}
                         </span>
                       </div>
                       <div>
-                        <span className="text-[8px] font-black text-slate-400 uppercase block">
-                          DST MAC
+                        <span className="text-[7px] font-black text-slate-400 uppercase block">
+                          Next Hop MAC
                         </span>
-                        <span className="text-[11px] font-mono font-black text-teal-900 truncate">
+                        <span className="text-[11px] font-mono font-black text-teal-900">
                           {simStep.index < simStep.path.length - 1
                             ? simStep.path[simStep.index + 1].mac.slice(-8)
-                            : "00:00:00"}
+                            : "RECEIVE"}
                         </span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="w-[280px] flex flex-col gap-3 py-2 border-l border-slate-100 pl-8 shrink-0">
-                  <div className="italic text-[11px] font-bold text-slate-600 leading-snug bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    {simStep.index < simStep.path.length - 1
-                      ? "El Router busca la MAC del próximo vecino conectado físicamente."
-                      : "¡Paquete Recibido! La IP coincide con la interfaz local."}
+                <div className="w-[320px] flex flex-col gap-3 py-3 border-l border-slate-100 pl-6 shrink-0">
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                      Estado del Salto
+                    </span>
+                    <div className="text-[11px] font-bold text-slate-700 leading-tight bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-inner">
+                      {simStep.index === 0 ? (
+                        <p>🚀 <span className="text-blue-600">Origen:</span> Encapsulando datos en paquete IP y buscando MAC del gateway.</p>
+                      ) : simStep.index < simStep.path.length - 1 ? (
+                        <p>⚙️ <span className="text-purple-600">Router:</span> Procesando Capa 3. Re-encapsulando Trama L2 para el próximo salto.</p>
+                      ) : (
+                        <p>✅ <span className="text-green-600">Destino:</span> Paquete recibido con éxito. Coincidencia de IP confirmada.</p>
+                      )}
+                    </div>
                   </div>
                   <button
                     onClick={nextStep}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-black uppercase tracking-[0.2em] shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all text-[11px]"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-black uppercase tracking-[0.15em] shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all text-[10px]"
                   >
                     {simStep.index < simStep.path.length - 1
-                      ? "Siguiente Salto"
-                      : "Finalizar"}
-                    <ArrowRight size={16} strokeWidth={3} />
+                      ? "Continuar Viaje"
+                      : "Cerrar Analizador"}
+                    <ArrowRight size={14} strokeWidth={3} />
                   </button>
                 </div>
               </div>
