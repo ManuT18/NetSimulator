@@ -90,40 +90,45 @@ const App = () => {
       type: "pc",
       name: "PC-1",
       mac: "AA:BB:CC:DD:EE:01",
+      ip: "192.168.1.11",
       x: 100,
-      y: 200,
+      y: 300,
     },
     {
       id: 2,
       type: "router",
       name: "Router-1",
       mac: "00:11:22:33:44:01",
-      x: 400,
-      y: 200,
+      ip: "192.168.1.1",
+      x: 500,
+      y: 300,
     },
     {
       id: 3,
       type: "router",
       name: "Router-2",
       mac: "00:11:22:33:44:02",
-      x: 700,
-      y: 200,
+      ip: "10.0.1.2",
+      x: 900,
+      y: 300,
     },
     {
       id: 4,
       type: "router",
       name: "Router-3",
       mac: "00:11:22:33:44:03",
-      x: 550,
-      y: 500,
+      ip: "192.168.3.1",
+      x: 700,
+      y: 700,
     },
     {
       id: 5,
       type: "pc",
       name: "PC-2",
       mac: "AA:BB:CC:DD:EE:02",
-      x: 900,
-      y: 500,
+      ip: "192.168.3.15",
+      x: 1100,
+      y: 700,
     },
   ]);
 
@@ -175,13 +180,15 @@ const App = () => {
         const rIdx =
           nodesList.filter((n) => n.type === "router").indexOf(router) + 1;
         const sIPValue =
-          s.type === "router"
+          s.ip ||
+          (s.type === "router"
             ? `192.168.${rIdx}.1`
-            : `192.168.${rIdx}.${10 + (pc.id % 100)}`;
+            : `192.168.${rIdx}.${10 + (pc.id % 100)}`);
         const tIPValue =
-          t.type === "router"
+          t.ip ||
+          (t.type === "router"
             ? `192.168.${rIdx}.1`
-            : `192.168.${rIdx}.${10 + (pc.id % 100)}`;
+            : `192.168.${rIdx}.${10 + (pc.id % 100)}`);
         return { sIP: sIPValue, tIP: tIPValue, subnet: `192.168.${rIdx}.0/24` };
       }
       return { sIP: "N/A", tIP: "N/A", subnet: "" };
@@ -211,9 +218,19 @@ const App = () => {
   };
 
   const nextStep = () => {
-    if (simStep && simStep.index < simStep.path.length - 1) {
-      setSimStep({ ...simStep, index: simStep.index + 1 });
-    } else setSimStep(null);
+    if (!simStep) return;
+
+    if (simStep.phase === "discovery") {
+      setSimStep({ ...simStep, phase: "data" });
+    } else if (simStep.index < simStep.path.length - 1) {
+      setSimStep({
+        ...simStep,
+        index: simStep.index + 1,
+        phase: "discovery",
+      });
+    } else {
+      setSimStep(null);
+    }
   };
 
   const addNode = (type) => {
@@ -286,7 +303,13 @@ const App = () => {
           setErrorMessage("No hay camino físico (cable) entre estos equipos.");
           setTimeout(() => setErrorMessage(null), 3000);
         } else {
-          setSimStep({ path, index: 0, origin: simSource, finalDest: node });
+          setSimStep({
+            path,
+            index: 0,
+            origin: simSource,
+            finalDest: node,
+            phase: "discovery",
+          });
         }
         setSimSource(null);
       }
@@ -499,6 +522,20 @@ const App = () => {
                       updateNodeData(selectedNode.id, "name", e.target.value)
                     }
                     className="w-full bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-black outline-none focus:border-blue-600 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black uppercase text-slate-400 block mb-2 tracking-widest">
+                    Dirección IP
+                  </label>
+                  <input
+                    type="text"
+                    value={selectedNode.ip || ""}
+                    placeholder="Ej: 192.168.1.1"
+                    onChange={(e) =>
+                      updateNodeData(selectedNode.id, "ip", e.target.value)
+                    }
+                    className="w-full bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-black font-mono outline-none focus:border-blue-600 transition-all"
                   />
                 </div>
                 <div>
@@ -759,14 +796,14 @@ const App = () => {
                   >
                     <circle
                       r="22"
-                      fill="#16a34a"
+                      fill={simStep.phase === "discovery" ? "#eab308" : "#16a34a"}
                       opacity="0.3"
                       className="animate-ping"
                     />
                     <circle
                       r="14"
-                      fill="#16a34a"
-                      className="shadow-2xl border-2 border-white"
+                      fill={simStep.phase === "discovery" ? "#eab308" : "#16a34a"}
+                      className="shadow-2xl border-2 border-white transition-colors duration-500"
                     />
                     <path
                       d="M-6 -4 L6 0 L-6 4 Z"
@@ -784,9 +821,15 @@ const App = () => {
               <div className="flex items-center justify-between px-8 py-2 border-b border-slate-100 bg-green-50/10">
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-600 animate-pulse"></div>
-                    <span className="text-[9px] font-black text-green-700 uppercase tracking-widest">
-                      Analizador de Tráfico
+                    <div
+                      className={`w-2 h-2 rounded-full animate-pulse ${simStep.phase === "discovery" ? "bg-amber-500" : "bg-green-600"}`}
+                    ></div>
+                    <span
+                      className={`text-[9px] font-black uppercase tracking-widest ${simStep.phase === "discovery" ? "text-amber-700" : "text-green-700"}`}
+                    >
+                      {simStep.phase === "discovery"
+                        ? "Descubrimiento (ARP)"
+                        : "Envío de Datos"}
                     </span>
                   </div>
                   <div className="h-3 w-px bg-slate-200"></div>
@@ -894,22 +937,42 @@ const App = () => {
                       Estado del Salto
                     </span>
                     <div className="text-[11px] font-bold text-slate-700 leading-tight bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-inner">
-                      {simStep.index === 0 ? (
-                        <p>🚀 <span className="text-blue-600">Origen:</span> Encapsulando datos en paquete IP y buscando MAC del gateway.</p>
+                      {simStep.phase === "discovery" ? (
+                        <p>
+                          🔍 <span className="text-amber-600">ARP Request:</span>{" "}
+                          Who has {getLinkIPs(links.find(l => l.source === simStep.path[simStep.index].id || l.target === simStep.path[simStep.index].id), nodes).tIP}? Tell{" "}
+                          {getLinkIPs(links.find(l => l.source === simStep.path[0].id || l.target === simStep.path[0].id), nodes).sIP}
+                        </p>
+                      ) : simStep.index === 0 ? (
+                        <p>
+                          🚀 <span className="text-blue-600">Origen:</span>{" "}
+                          Encapsulando datos en paquete IP y enviando al
+                          siguiente salto.
+                        </p>
                       ) : simStep.index < simStep.path.length - 1 ? (
-                        <p>⚙️ <span className="text-purple-600">Router:</span> Procesando Capa 3. Re-encapsulando Trama L2 para el próximo salto.</p>
+                        <p>
+                          ⚙️ <span className="text-purple-600">Router:</span>{" "}
+                          Capa 3 OK. Re-encapsulando Trama L2 para el próximo
+                          salto.
+                        </p>
                       ) : (
-                        <p>✅ <span className="text-green-600">Destino:</span> Paquete recibido con éxito. Coincidencia de IP confirmada.</p>
+                        <p>
+                          ✅ <span className="text-green-600">Destino:</span>{" "}
+                          Paquete recibido con éxito. Coincidencia de IP
+                          confirmada.
+                        </p>
                       )}
                     </div>
                   </div>
                   <button
                     onClick={nextStep}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-black uppercase tracking-[0.15em] shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all text-[10px]"
+                    className={`w-full ${simStep.phase === "discovery" ? "bg-amber-500 hover:bg-amber-600" : "bg-blue-600 hover:bg-blue-700"} text-white py-3 rounded-xl font-black uppercase tracking-[0.15em] shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all text-[10px]`}
                   >
-                    {simStep.index < simStep.path.length - 1
-                      ? "Continuar Viaje"
-                      : "Cerrar Analizador"}
+                    {simStep.phase === "discovery"
+                      ? "Resolver MAC"
+                      : simStep.index < simStep.path.length - 1
+                        ? "Continuar Viaje"
+                        : "Cerrar Analizador"}
                     <ArrowRight size={14} strokeWidth={3} />
                   </button>
                 </div>
