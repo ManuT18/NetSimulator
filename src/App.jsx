@@ -592,7 +592,7 @@ const App = () => {
                   const p2y = t.y + (s.y - t.y) * 0.25;
 
                   return (
-                    <g key={link.id} className="transition-opacity duration-300" style={{ opacity: !selectedNode || isLinkActive ? 1 : 0.2 }}>
+                    <g key={link.id} className="transition-opacity duration-300">
                       <line
                         x1={s.x}
                         y1={s.y}
@@ -604,69 +604,74 @@ const App = () => {
                         className="pointer-events-none"
                       />
                       {subnet && (
-                        <g transform={`translate(${midX}, ${midY})`} className="transition-opacity duration-500" style={{ opacity: isLinkActive ? 1 : 0.4 }}>
+                        <g transform={`translate(${midX}, ${midY})`} className="transition-all duration-500">
                           <rect
-                            x="-40"
-                            y="-8"
-                            width="80"
-                            height="16"
+                            x="-38"
+                            y="-7.5"
+                            width="76"
+                            height="15"
                             rx="4"
                             fill="white"
-                            stroke="#e2e8f0"
+                            stroke={isLinkActive ? "#e2e8f0" : "transparent"}
                             strokeWidth="1"
+                            opacity={isLinkActive ? 1 : 0.7}
                           />
                           <text
                             textAnchor="middle"
                             y="3"
                             fontSize="8"
-                            fontWeight="800"
-                            fill="#94a3b8"
-                            className="uppercase tracking-widest"
+                            fontWeight={isLinkActive ? "900" : "700"}
+                            fill={isLinkActive ? "#64748b" : "#cbd5e1"}
+                            className="uppercase tracking-widest transition-colors duration-300"
                           >
                             {subnet}
                           </text>
                         </g>
                       )}
-                      <g transform={`translate(${p1x}, ${p1y})`} className="transition-opacity duration-500" style={{ opacity: isLinkActive ? 1 : 0 }}>
+                      <g transform={`translate(${p1x}, ${p1y})`} className="transition-all duration-500">
                         <rect
-                          x="-35"
-                          y="-8"
-                          width="70"
-                          height="16"
-                          rx="4"
-                          fill="#eff6ff"
-                          stroke="#bfdbfe"
+                          x="-32"
+                          y="-7"
+                          width="64"
+                          height="14"
+                          rx="3"
+                          fill={isLinkActive ? "#eff6ff" : "white"}
+                          stroke={isLinkActive ? "#bfdbfe" : "transparent"}
                           strokeWidth="1"
+                          opacity={isLinkActive ? 1 : 0.8}
                         />
                         <text
                           textAnchor="middle"
                           y="3"
-                          fontSize="8.5"
-                          fontWeight="800"
-                          fill="#3b82f6"
+                          fontSize="8"
+                          fontWeight={isLinkActive ? "900" : "600"}
+                          fill={isLinkActive ? "#2563eb" : "#94a3b8"}
                           fontFamily="monospace"
+                          className="transition-colors duration-300"
                         >
                           {sIP}
                         </text>
                       </g>
-                      <g transform={`translate(${p2x}, ${p2y})`} className="transition-opacity duration-500" style={{ opacity: isLinkActive ? 1 : 0 }}>
+                      <g transform={`translate(${p2x}, ${p2y})`} className="transition-all duration-500">
                         <rect
-                          x="-35"
-                          y="-8"
-                          width="70"
-                          height="16"
-                          rx="4"
-                          fill="#eff6ff"
-                          stroke="#bfdbfe"
+                          x="-32"
+                          y="-7"
+                          width="64"
+                          height="14"
+                          rx="3"
+                          fill={isLinkActive ? "#eff6ff" : "white"}
+                          stroke={isLinkActive ? "#bfdbfe" : "transparent"}
                           strokeWidth="1"
+                          opacity={isLinkActive ? 1 : 0.8}
                         />
                         <text
                           textAnchor="middle"
                           y="3"
-                          fontSize="8.5"
-                          fontWeight="800"
-                          fill="#3b82f6"
+                          fontSize="8"
+                          fontWeight={isLinkActive ? "900" : "600"}
+                          fill={isLinkActive ? "#2563eb" : "#94a3b8"}
                           fontFamily="monospace"
+                          className="transition-colors duration-300"
                         >
                           {tIP}
                         </text>
