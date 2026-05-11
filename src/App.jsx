@@ -812,9 +812,18 @@ const App = () => {
                   links
                     .filter(l => l.source === simStep.path[simStep.index].id || l.target === simStep.path[simStep.index].id)
                     .map(l => {
-                      const neighbor = nodes.find(n => n.id === (l.source === simStep.path[simStep.index].id ? l.target : l.source));
+                      const sourceNode = simStep.path[simStep.index];
+                      const neighbor = nodes.find(n => n.id === (l.source === sourceNode.id ? l.target : l.source));
                       return (
-                        <g key={`arp-${neighbor.id}`} transform={`translate(${neighbor.x}, ${neighbor.y})`} className="animate-in fade-in duration-500 scale-in-center">
+                        <g 
+                          key={`arp-${neighbor.id}`} 
+                          transform={`translate(${neighbor.x}, ${neighbor.y})`} 
+                          style={{
+                            '--start-x': `${sourceNode.x - neighbor.x}px`,
+                            '--start-y': `${sourceNode.y - neighbor.y}px`,
+                          }}
+                          className="animate-broadcast-packet"
+                        >
                           <circle r="18" fill="#eab308" opacity="0.2" className="animate-ping" />
                           <circle r="10" fill="#eab308" className="shadow-lg border-2 border-white" />
                         </g>
