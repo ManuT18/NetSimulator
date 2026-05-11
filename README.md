@@ -2,7 +2,7 @@
 
 Un simulador de redes informáticas interactivo diseñado para estudiantes y profesionales. Visualiza el "viaje del paquete" a través de diferentes capas del modelo OSI, configura dispositivos y experimenta con topologías de red en tiempo real.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://netsimulatoritlp.vercel.app/)
+[![Desplegado en Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://netsimulatoritlp.vercel.app/)
 
 ## 🚀 Características
 
