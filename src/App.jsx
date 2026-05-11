@@ -694,6 +694,7 @@ const App = () => {
                     key={node.id}
                     transform={`translate(${node.x}, ${node.y})`}
                     onMouseDown={(e) => handleNodeEvent(e, node)}
+                    onClick={(e) => e.stopPropagation()}
                     className="cursor-pointer group"
                   >
                     {(selectedNode?.id === node.id ||
