@@ -834,7 +834,20 @@ const App = () => {
                 {simStep && (
                   <g
                     className="transition-all duration-700 ease-in-out"
-                    transform={`translate(${simStep.path[simStep.index].x}, ${simStep.path[simStep.index].y})`}
+                    transform={
+                      simStep.phase === "response"
+                        ? `translate(${simStep.path[simStep.index + 1]?.x}, ${simStep.path[simStep.index + 1]?.y})`
+                        : `translate(${simStep.path[simStep.index].x}, ${simStep.path[simStep.index].y})`
+                    }
+                    style={
+                      simStep.phase === "response"
+                        ? {
+                            '--start-x': `${simStep.path[simStep.index].x - simStep.path[simStep.index + 1]?.x}px`,
+                            '--start-y': `${simStep.path[simStep.index].y - simStep.path[simStep.index + 1]?.y}px`,
+                          }
+                        : {}
+                    }
+                    className={simStep.phase === "response" ? "animate-broadcast-packet" : ""}
                   >
                     <circle
                       r="22"
@@ -981,11 +994,12 @@ const App = () => {
                     <div className="text-[11px] font-bold text-slate-700 leading-tight bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-inner">
                       {simStep.phase === "discovery" ? (
                         <p>
-                          🔍 <span className="text-amber-600 font-black">Broadcast:</span> ¿Quién tiene la IP <span className="text-blue-600">{getLinkIPs(links.find(l => l.source === simStep.path[simStep.index].id || l.target === simStep.path[simStep.index].id), nodes).tIP}</span>? Avisen a {simStep.path[simStep.index].ip}
+                          🔍 <span className="text-amber-600 font-black">Broadcast:</span> ¿Quién tiene la IP <span className="text-blue-600">{getLinkIPs(links.find(l => l.source === simStep.path[simStep.index].id || l.target === simStep.path[simStep.index].id), nodes).tIP}</span>? <br />
+                          <span className="text-[10px] text-slate-500">Todos los vecinos reciben el mensaje, pero solo el dueño de la IP responderá.</span>
                         </p>
                       ) : simStep.phase === "response" ? (
                         <p>
-                          📩 <span className="text-amber-600 font-black">Respuesta:</span> Yo tengo esa IP, mi MAC es <span className="text-teal-600">{simStep.path[simStep.index + 1]?.mac.slice(-8)}</span>
+                          📩 <span className="text-amber-600 font-black">Respuesta (Unicast):</span> El equipo <span className="text-blue-600">{simStep.path[simStep.index + 1]?.name}</span> reconoce su IP y envía su dirección MAC de vuelta.
                         </p>
                       ) : simStep.index === 0 ? (
                         <p>
