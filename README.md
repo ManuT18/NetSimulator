@@ -2,6 +2,8 @@
 
 Un simulador de redes informáticas interactivo diseñado para estudiantes y profesionales. Visualiza el "viaje del paquete" a través de diferentes capas del modelo OSI, configura dispositivos y experimenta con topologías de red en tiempo real.
 
+[![Deploy with Vercel](https://vercel.com/button)](https://netsimulatoritlp.vercel.app/)
+
 ## 🚀 Características
 
 - **Diseño Interactivo**: Arrastra y suelta equipos para crear tu topología.
@@ -32,6 +34,10 @@ Un simulador de redes informáticas interactivo diseñado para estudiantes y pro
    ```bash
    npm run dev
    ```
+
+## 🌐 Despliegue
+
+El proyecto se encuentra desplegado y listo para usar en: [NetSimulator ITLP](https://netsimulatoritlp.vercel.app/)
 
 ## 🎓 Propósito Educativo
 
