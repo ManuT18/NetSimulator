@@ -241,14 +241,19 @@ const App = () => {
       setSimStep({ ...simStep, phase: "response" });
     } else if (simStep.phase === "response") {
       setSimStep({ ...simStep, phase: "data" });
-    } else if (simStep.index < simStep.path.length - 1) {
+    } else if (simStep.index < simStep.path.length - 2) {
       setSimStep({
         ...simStep,
         index: simStep.index + 1,
         phase: "discovery",
       });
     } else {
-      setSimStep(null);
+      // Llegamos al destino final, no iniciamos nuevo descubrimiento
+      setSimStep({
+        ...simStep,
+        index: simStep.index + 1,
+        phase: "finished",
+      });
     }
   };
 
@@ -833,7 +838,6 @@ const App = () => {
 
                 {simStep && (
                   <g
-                    key={`${simStep.index}-${simStep.phase}`}
                     className="transition-all duration-1000 ease-in-out"
                     transform={
                       simStep.phase === "data" && simStep.index < simStep.path.length - 1
@@ -1006,9 +1010,7 @@ const App = () => {
                         </p>
                       ) : (
                         <p>
-                          ✅ <span className="text-green-600">Destino:</span>{" "}
-                          Paquete recibido con éxito. Coincidencia de IP
-                          confirmada.
+                          ✅ <span className="text-green-600 font-black">¡Éxito!</span> El paquete ha llegado a su destino final ({simStep.path[simStep.path.length - 1].name}).
                         </p>
                       )}
                     </div>
@@ -1021,9 +1023,9 @@ const App = () => {
                       ? "Emitir Broadcast"
                       : simStep.phase === "response"
                         ? "Recibir MAC"
-                        : simStep.index < simStep.path.length - 1
-                          ? "Continuar Viaje"
-                          : "FINALIZAR"}
+                        : simStep.phase === "finished"
+                          ? "FINALIZAR"
+                          : "Continuar Viaje"}
                     <ArrowRight size={14} strokeWidth={3} />
                   </button>
                 </div>
