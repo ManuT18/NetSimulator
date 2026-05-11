@@ -22,6 +22,7 @@ import {
   AlertCircle,
   Heart,
   Move,
+  Mail,
 } from "lucide-react";
 
 const osiLayers = [
@@ -168,7 +169,7 @@ const App = () => {
   const [showEncapModal, setShowEncapModal] = useState(false);
   const [encapActiveStep, setEncapActiveStep] = useState(0);
   const [showOsiModal, setShowOsiModal] = useState(false);
-  const [activeOsiLayer, setActiveOsiLayer] = useState(7);
+  const [activeOsiLayer, setActiveOsiLayer] = useState(1);
 
   const canvasRef = useRef(null);
 
@@ -235,6 +236,8 @@ const App = () => {
     if (!simStep) return;
 
     if (simStep.phase === "discovery") {
+      setSimStep({ ...simStep, phase: "response" });
+    } else if (simStep.phase === "response") {
       setSimStep({ ...simStep, phase: "data" });
     } else if (simStep.index < simStep.path.length - 1) {
       setSimStep({
@@ -490,13 +493,13 @@ const App = () => {
                 strokeWidth={3}
               />
               <span className="text-sm font-black text-slate-800 tracking-tight">
-                Inspección PDUs
+                Cómo se compone un paquete?
               </span>
             </button>
             <button
               onClick={() => {
                 setShowOsiModal(true);
-                setActiveOsiLayer(7);
+                setActiveOsiLayer(1);
               }}
               className="flex items-center gap-4 w-full p-4 rounded-2xl transition-all border-2 bg-indigo-50/50 border-indigo-100 hover:border-indigo-200 group shadow-sm text-left"
             >
@@ -803,6 +806,20 @@ const App = () => {
                   </g>
                 ))}
 
+                {simStep && simStep.phase === "discovery" && (
+                  links
+                    .filter(l => l.source === simStep.path[simStep.index].id || l.target === simStep.path[simStep.index].id)
+                    .map(l => {
+                      const neighbor = nodes.find(n => n.id === (l.source === simStep.path[simStep.index].id ? l.target : l.source));
+                      return (
+                        <g key={`arp-${neighbor.id}`} transform={`translate(${neighbor.x}, ${neighbor.y})`} className="animate-in fade-in duration-500 scale-in-center">
+                          <circle r="18" fill="#eab308" opacity="0.2" className="animate-ping" />
+                          <circle r="10" fill="#eab308" className="shadow-lg border-2 border-white" />
+                        </g>
+                      );
+                    })
+                )}
+
                 {simStep && (
                   <g
                     className="transition-all duration-700 ease-in-out"
@@ -810,20 +827,20 @@ const App = () => {
                   >
                     <circle
                       r="22"
-                      fill={simStep.phase === "discovery" ? "#eab308" : "#16a34a"}
+                      fill={simStep.phase === "data" ? "#16a34a" : "#eab308"}
                       opacity="0.3"
                       className="animate-ping"
                     />
                     <circle
                       r="14"
-                      fill={simStep.phase === "discovery" ? "#eab308" : "#16a34a"}
+                      fill={simStep.phase === "data" ? "#16a34a" : "#eab308"}
                       className="shadow-2xl border-2 border-white transition-colors duration-500"
                     />
-                    <path
-                      d="M-6 -4 L6 0 L-6 4 Z"
-                      fill="white"
-                      transform="translate(2,0)"
-                    />
+                    <foreignObject x="-10" y="-10" width="20" height="20">
+                      <div className="flex items-center justify-center h-full text-white pointer-events-none">
+                        <Mail size={14} strokeWidth={3} />
+                      </div>
+                    </foreignObject>
                   </g>
                 )}
               </g>
@@ -953,9 +970,11 @@ const App = () => {
                     <div className="text-[11px] font-bold text-slate-700 leading-tight bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-inner">
                       {simStep.phase === "discovery" ? (
                         <p>
-                          🔍 <span className="text-amber-600">ARP Request:</span>{" "}
-                          Who has {getLinkIPs(links.find(l => l.source === simStep.path[simStep.index].id || l.target === simStep.path[simStep.index].id), nodes).tIP}? Tell{" "}
-                          {getLinkIPs(links.find(l => l.source === simStep.path[0].id || l.target === simStep.path[0].id), nodes).sIP}
+                          🔍 <span className="text-amber-600 font-black">Broadcast:</span> ¿Quién tiene la IP <span className="text-blue-600">{getLinkIPs(links.find(l => l.source === simStep.path[simStep.index].id || l.target === simStep.path[simStep.index].id), nodes).tIP}</span>? Avisen a {simStep.path[simStep.index].ip}
+                        </p>
+                      ) : simStep.phase === "response" ? (
+                        <p>
+                          📩 <span className="text-amber-600 font-black">Respuesta:</span> Yo tengo esa IP, mi MAC es <span className="text-teal-600">{simStep.path[simStep.index + 1]?.mac.slice(-8)}</span>
                         </p>
                       ) : simStep.index === 0 ? (
                         <p>
@@ -980,13 +999,15 @@ const App = () => {
                   </div>
                   <button
                     onClick={nextStep}
-                    className={`w-full ${simStep.phase === "discovery" ? "bg-amber-500 hover:bg-amber-600" : "bg-blue-600 hover:bg-blue-700"} text-white py-3 rounded-xl font-black uppercase tracking-[0.15em] shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all text-[10px]`}
+                    className={`w-full ${simStep.phase !== "data" ? "bg-amber-500 hover:bg-amber-600" : "bg-blue-600 hover:bg-blue-700"} text-white py-3 rounded-xl font-black uppercase tracking-[0.15em] shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all text-[10px]`}
                   >
                     {simStep.phase === "discovery"
-                      ? "Resolver MAC"
-                      : simStep.index < simStep.path.length - 1
-                        ? "Continuar Viaje"
-                        : "Cerrar Analizador"}
+                      ? "Emitir Broadcast"
+                      : simStep.phase === "response"
+                        ? "Recibir MAC"
+                        : simStep.index < simStep.path.length - 1
+                          ? "Continuar Viaje"
+                          : "FINALIZAR"}
                     <ArrowRight size={14} strokeWidth={3} />
                   </button>
                 </div>
@@ -1025,7 +1046,7 @@ const App = () => {
             </button>
             <div className="p-12 flex-1 overflow-y-auto">
               <h2 className="text-4xl font-black text-blue-600 uppercase tracking-tighter flex items-center gap-5 border-b border-slate-100 pb-8 mb-10">
-                <Box size={42} strokeWidth={3} /> Inspección de Datos (Trama y Paquete)
+                <Box size={42} strokeWidth={3} /> Cómo se compone un paquete?
               </h2>
               <div className="flex flex-col items-center justify-center min-h-[400px] bg-slate-50/80 rounded-[4rem] p-12 border border-slate-200 shadow-inner mb-10 overflow-hidden">
                 <div className="w-full flex items-stretch justify-center">
@@ -1093,11 +1114,21 @@ const App = () => {
                     ¿Qué estamos viendo?
                   </h4>
                   <p className="text-sm text-slate-600 leading-relaxed font-bold">
-                    Aquí se muestra el proceso de **Encapsulamiento**. Los datos originales se "envuelven" en diferentes capas:
-                    <br /><br />
-                    1. El **Paquete IP** agrega las direcciones lógicas (IP Origen y Destino).
-                    <br />
-                    2. La **Trama Ethernet** agrega las direcciones físicas (MAC Origen y Destino) para poder viajar por el cable.
+                    {encapActiveStep === 0 && (
+                      <>
+                        Los <span className="text-blue-600 font-black text-lg">Datos</span> son la información pura que queremos enviar. Se agrupan con la capa de Transporte para formar el corazón de la comunicación.
+                      </>
+                    )}
+                    {encapActiveStep === 1 && (
+                      <>
+                        Al añadir el <span className="text-purple-600 font-black text-lg">Encabezado IP</span>, convertimos los datos en un Paquete. Ahora tiene las direcciones lógicas para viajar por Internet.
+                      </>
+                    )}
+                    {encapActiveStep === 2 && (
+                      <>
+                        Finalmente, el <span className="text-teal-600 font-black text-lg">Encabezado Ethernet</span> convierte el paquete en una Trama. Esto permite que el mensaje se mueva físicamente por los cables.
+                      </>
+                    )}
                   </p>
                 </div>
                 <div className="bg-blue-50/50 p-8 rounded-3xl border border-blue-100">
@@ -1107,15 +1138,21 @@ const App = () => {
                   <ul className="text-sm text-slate-600 space-y-3 font-bold">
                     <li className="flex items-start gap-3">
                       <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
-                      <span>**PDU (Capa 3):** Se denomina Paquete o Datagrama.</span>
+                      <span>
+                        <strong className="text-slate-900">PDU (Capa 3):</strong> Se denomina Paquete o Datagrama.
+                      </span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
-                      <span>**PDU (Capa 2):** Se denomina Trama (Frame).</span>
+                      <span>
+                        <strong className="text-slate-900">PDU (Capa 2):</strong> Se denomina Trama (Frame).
+                      </span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
-                      <span>**Carga Útil:** Son los datos que realmente queremos enviar.</span>
+                      <span>
+                        <strong className="text-slate-900">Carga Útil:</strong> Son los datos que realmente queremos enviar.
+                      </span>
                     </li>
                   </ul>
                 </div>
