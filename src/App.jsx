@@ -31,7 +31,9 @@ const osiLayers = [
     icon: Zap,
     color: "text-amber-600",
     bg: "bg-amber-50",
-    desc: "Se encarga de las conexiones físicas: cables, conectores y la transmisión de bits (señales eléctricas o de luz).",
+    key: "El medio y las señales",
+    desc: "¡Son los cables y la electricidad! Define cómo viajan los ceros y unos por el cable de red o el aire (Wi-Fi). Es la base física de todo.",
+    example: "Cables de cobre, Fibra óptica, Antenas Wi-Fi, Conectores RJ45.",
   },
   {
     num: 2,
@@ -39,7 +41,9 @@ const osiLayers = [
     icon: ShieldCheck,
     color: "text-teal-600",
     bg: "bg-teal-50",
-    desc: "Direccionamiento físico (MAC) y detección de errores. Prepara el paquete para el medio físico (Trama).",
+    key: "Direccionamiento Físico",
+    desc: "Es como el 'DNI' de tu tarjeta de red (MAC). Se asegura de que el mensaje llegue al vecino correcto sin errores a través del cable.",
+    example: "Tarjetas de Red (NIC), Switches, Direcciones MAC.",
   },
   {
     num: 3,
@@ -47,7 +51,9 @@ const osiLayers = [
     icon: Network,
     color: "text-purple-600",
     bg: "bg-purple-50",
-    desc: "Determinación de ruta y direccionamiento lógico (IP). Aquí es donde operan los Routers.",
+    key: "El GPS de Internet",
+    desc: "Usa direcciones IP para encontrar el mejor camino entre ciudades o países. Los Routers deciden por dónde enviar el paquete.",
+    example: "Protocolo IP, Routers, Direcciones IP (192.168.1.1).",
   },
   {
     num: 4,
@@ -55,7 +61,9 @@ const osiLayers = [
     icon: Activity,
     color: "text-blue-600",
     bg: "bg-blue-50",
-    desc: "Conexión extremo a extremo y control de flujo. Protocolos como TCP (confiable) y UDP (rápido).",
+    key: "Mensajería y Orden",
+    desc: "Se encarga de trocear los datos y asegurar que lleguen completos y en orden al destino. Si algo se pierde, lo pide de nuevo.",
+    example: "TCP (Envío seguro), UDP (Envío rápido), Puertos.",
   },
   {
     num: 5,
@@ -63,7 +71,9 @@ const osiLayers = [
     icon: Info,
     color: "text-indigo-600",
     bg: "bg-indigo-50",
-    desc: "Mantiene y controla el enlace entre dos computadores que están transmitiendo datos.",
+    key: "Control del Diálogo",
+    desc: "Es el coordinador de la charla. Abre, mantiene y cierra la conexión entre dos aplicaciones para que no se mezclen los datos.",
+    example: "Iniciar sesión en un servidor, mantener llamadas abiertas.",
   },
   {
     num: 6,
@@ -71,7 +81,9 @@ const osiLayers = [
     icon: Cpu,
     color: "text-emerald-600",
     bg: "bg-emerald-50",
-    desc: "Traducción, cifrado y compresión de datos para que la capa de aplicación los entienda.",
+    key: "Formato y Traducción",
+    desc: "Es el traductor. Se asegura de que los datos estén en un formato que ambos entiendan. También se encarga de cifrar (proteger) los datos.",
+    example: "Compresión de fotos (.jpg), Cifrado SSL/TLS, Formatos de texto.",
   },
   {
     num: 7,
@@ -79,7 +91,9 @@ const osiLayers = [
     icon: Monitor,
     color: "text-rose-600",
     bg: "bg-rose-50",
-    desc: "Interfaz directa con el usuario (Navegador, Email). Protocolos como HTTP, FTP, DNS.",
+    key: "Interfaz con el Usuario",
+    desc: "Es lo que vos ves y usas. Tu navegador, WhatsApp o el correo. Es la puerta de entrada a la red para las aplicaciones que usamos.",
+    example: "Google Chrome, WhatsApp, Correo (Gmail), Protocolo HTTP.",
   },
 ];
 
@@ -1011,34 +1025,40 @@ const App = () => {
             </button>
             <div className="p-12 flex-1 overflow-y-auto">
               <h2 className="text-4xl font-black text-blue-600 uppercase tracking-tighter flex items-center gap-5 border-b border-slate-100 pb-8 mb-10">
-                <Box size={42} strokeWidth={3} /> Inspección de PDUs
+                <Box size={42} strokeWidth={3} /> Inspección de Datos (Trama y Paquete)
               </h2>
               <div className="flex flex-col items-center justify-center min-h-[400px] bg-slate-50/80 rounded-[4rem] p-12 border border-slate-200 shadow-inner mb-10 overflow-hidden">
                 <div className="w-full flex items-stretch justify-center">
                   <div
                     className={`flex transition-all duration-700 ease-out transform ${encapActiveStep >= 2 ? "translate-x-0 opacity-100" : "-translate-x-32 opacity-0 pointer-events-none"}`}
                   >
-                    <div className="bg-teal-600 text-white p-6 rounded-l-[2rem] flex flex-col items-center justify-center border-r-2 border-teal-700 shadow-xl w-48 shrink-0">
+                    <div className="bg-teal-600 text-white p-6 rounded-l-[2rem] flex flex-col items-center justify-center border-r-2 border-teal-700 shadow-xl w-64 shrink-0">
                       <span className="text-[10px] font-black tracking-widest opacity-80 mb-2 uppercase">
-                        Header L2
+                        Capa 2 • Trama Ethernet
                       </span>
-                      <span className="text-[14px] font-black uppercase">
+                      <span className="text-[14px] font-black uppercase mb-3">
                         ENLACE (MAC)
                       </span>
+                      <div className="text-[9px] font-mono bg-black/20 p-2 rounded-lg w-full text-center">
+                        SRC: AA:BB... | DST: 00:11...
+                      </div>
                     </div>
                   </div>
                   <div
                     className={`flex transition-all duration-700 delay-100 ease-out transform ${encapActiveStep >= 1 ? "translate-x-0 opacity-100" : "-translate-x-16 opacity-0 pointer-events-none"}`}
                   >
                     <div
-                      className={`bg-purple-600 text-white p-6 flex flex-col items-center justify-center border-r-2 border-purple-700 shadow-lg w-44 shrink-0 ${encapActiveStep < 2 ? "rounded-l-[1rem]" : ""}`}
+                      className={`bg-purple-600 text-white p-6 flex flex-col items-center justify-center border-r-2 border-purple-700 shadow-lg w-64 shrink-0 ${encapActiveStep < 2 ? "rounded-l-[1rem]" : ""}`}
                     >
                       <span className="text-[10px] font-black tracking-widest opacity-80 mb-2 uppercase">
-                        Header L3
+                        Capa 3 • Paquete IP
                       </span>
-                      <span className="text-[14px] font-black uppercase text-center">
+                      <span className="text-[14px] font-black uppercase text-center mb-3">
                         RED (IP)
                       </span>
+                      <div className="text-[9px] font-mono bg-black/20 p-2 rounded-lg w-full text-center">
+                        SRC: 192.168.x.x | DST: 10.0.x.x
+                      </div>
                     </div>
                   </div>
                   <div
@@ -1064,6 +1084,40 @@ const App = () => {
                       </span>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div className="bg-slate-50 p-8 rounded-3xl border border-slate-200">
+                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">
+                    ¿Qué estamos viendo?
+                  </h4>
+                  <p className="text-sm text-slate-600 leading-relaxed font-bold">
+                    Aquí se muestra el proceso de **Encapsulamiento**. Los datos originales se "envuelven" en diferentes capas:
+                    <br /><br />
+                    1. El **Paquete IP** agrega las direcciones lógicas (IP Origen y Destino).
+                    <br />
+                    2. La **Trama Ethernet** agrega las direcciones físicas (MAC Origen y Destino) para poder viajar por el cable.
+                  </p>
+                </div>
+                <div className="bg-blue-50/50 p-8 rounded-3xl border border-blue-100">
+                  <h4 className="text-xs font-black text-blue-600 uppercase tracking-widest mb-4">
+                    Detalles Técnicos
+                  </h4>
+                  <ul className="text-sm text-slate-600 space-y-3 font-bold">
+                    <li className="flex items-start gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
+                      <span>**PDU (Capa 3):** Se denomina Paquete o Datagrama.</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
+                      <span>**PDU (Capa 2):** Se denomina Trama (Frame).</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
+                      <span>**Carga Útil:** Son los datos que realmente queremos enviar.</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -1159,13 +1213,33 @@ const App = () => {
                           </p>
                         </div>
                       </div>
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200">
-                        <h4 className="text-[10px] font-black uppercase text-slate-400 mb-3 tracking-widest">
-                          Función
-                        </h4>
-                        <p className="text-slate-700 font-bold leading-relaxed">
-                          {osiLayers.find((l) => l.num === activeOsiLayer).desc}
-                        </p>
+                      <div className="space-y-6">
+                        <div className="bg-white p-6 rounded-2xl border border-slate-200">
+                          <h4 className="text-[10px] font-black uppercase text-slate-400 mb-3 tracking-widest">
+                            Concepto Principal
+                          </h4>
+                          <p className="text-xl font-black text-slate-800 leading-tight">
+                            "{osiLayers.find((l) => l.num === activeOsiLayer).key}"
+                          </p>
+                        </div>
+                        
+                        <div className="bg-white p-6 rounded-2xl border border-slate-200">
+                          <h4 className="text-[10px] font-black uppercase text-slate-400 mb-3 tracking-widest">
+                            Explicación Fácil
+                          </h4>
+                          <p className="text-slate-700 font-bold leading-relaxed text-sm">
+                            {osiLayers.find((l) => l.num === activeOsiLayer).desc}
+                          </p>
+                        </div>
+
+                        <div className={`p-6 rounded-2xl border ${osiLayers.find((l) => l.num === activeOsiLayer).bg.replace('50', '100')} border-dashed`}>
+                          <h4 className="text-[10px] font-black uppercase opacity-60 mb-3 tracking-widest">
+                            Ejemplos Reales
+                          </h4>
+                          <p className="text-slate-600 font-black text-sm">
+                            {osiLayers.find((l) => l.num === activeOsiLayer).example}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   )}
