@@ -836,20 +836,20 @@ const App = () => {
                     key={`${simStep.index}-${simStep.phase}`}
                     className="transition-all duration-1000 ease-in-out"
                     transform={
-                      simStep.phase === "data"
-                        ? `translate(${simStep.path[simStep.index + 1]?.x}, ${simStep.path[simStep.index + 1]?.y})`
-                        : `translate(${simStep.path[simStep.index].x}, ${simStep.path[simStep.index].y})`
+                      simStep.phase === "data" && simStep.index < simStep.path.length - 1
+                        ? `translate(${simStep.path[simStep.index + 1]?.x || 0}, ${simStep.path[simStep.index + 1]?.y || 0})`
+                        : `translate(${simStep.path[simStep.index]?.x || 0}, ${simStep.path[simStep.index]?.y || 0})`
                     }
                     style={
-                      simStep.phase === "response"
+                      simStep.phase === "response" && simStep.index < simStep.path.length - 1
                         ? {
-                            '--start-x': `${simStep.path[simStep.index + 1]?.x - simStep.path[simStep.index].x}px`,
-                            '--start-y': `${simStep.path[simStep.index + 1]?.y - simStep.path[simStep.index].y}px`,
+                            '--start-x': `${(simStep.path[simStep.index + 1]?.x || 0) - (simStep.path[simStep.index]?.x || 0)}px`,
+                            '--start-y': `${(simStep.path[simStep.index + 1]?.y || 0) - (simStep.path[simStep.index]?.y || 0)}px`,
                           }
-                        : simStep.phase === "data"
+                        : simStep.phase === "data" && simStep.index < simStep.path.length - 1
                         ? {
-                            '--start-x': `${simStep.path[simStep.index].x - simStep.path[simStep.index + 1]?.x}px`,
-                            '--start-y': `${simStep.path[simStep.index].y - simStep.path[simStep.index + 1]?.y}px`,
+                            '--start-x': `${(simStep.path[simStep.index]?.x || 0) - (simStep.path[simStep.index + 1]?.x || 0)}px`,
+                            '--start-y': `${(simStep.path[simStep.index]?.y || 0) - (simStep.path[simStep.index + 1]?.y || 0)}px`,
                           }
                         : {}
                     }
@@ -926,16 +926,7 @@ const App = () => {
                           Origen
                         </span>
                         <span className="text-[11px] font-mono font-black text-purple-900">
-                          {
-                            getLinkIPs(
-                              links.find(
-                                (l) =>
-                                  l.source === simStep.path[0].id ||
-                                  l.target === simStep.path[0].id,
-                              ),
-                              nodes,
-                            ).sIP
-                          }
+                          {simStep.path[0].ip}
                         </span>
                       </div>
                       <div>
@@ -943,18 +934,7 @@ const App = () => {
                           Destino
                         </span>
                         <span className="text-[11px] font-mono font-black text-purple-900">
-                          {
-                            getLinkIPs(
-                              links.find(
-                                (l) =>
-                                  l.source ===
-                                    simStep.path[simStep.path.length - 1].id ||
-                                  l.target ===
-                                    simStep.path[simStep.path.length - 1].id,
-                              ),
-                              nodes,
-                            ).tIP
-                          }
+                          {simStep.path[simStep.path.length - 1].ip}
                         </span>
                       </div>
                     </div>
@@ -1000,7 +980,12 @@ const App = () => {
                     <div className="text-[11px] font-bold text-slate-700 leading-tight bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-inner">
                       {simStep.phase === "discovery" ? (
                         <p>
-                          🔍 <span className="text-amber-600 font-black">Broadcast:</span> ¿Quién tiene la IP <span className="text-blue-600">{getLinkIPs(links.find(l => l.source === simStep.path[simStep.index].id || l.target === simStep.path[simStep.index].id), nodes).tIP}</span>? <br />
+                          🔍 <span className="text-amber-600 font-black">Broadcast:</span> ¿Quién tiene la IP <span className="text-blue-600">{
+                            getLinkIPs(links.find(l => 
+                              (l.source === simStep.path[simStep.index].id && l.target === simStep.path[simStep.index + 1]?.id) ||
+                              (l.target === simStep.path[simStep.index].id && l.source === simStep.path[simStep.index + 1]?.id)
+                            ), nodes).tIP
+                          }</span>? <br />
                           <span className="text-[10px] text-slate-500">Todos los vecinos reciben el mensaje, pero solo el dueño de la IP responderá.</span>
                         </p>
                       ) : simStep.phase === "response" ? (
