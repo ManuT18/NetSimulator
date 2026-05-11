@@ -606,23 +606,23 @@ const App = () => {
                       {subnet && (
                         <g transform={`translate(${midX}, ${midY})`} className="transition-all duration-500">
                           <rect
-                            x="-38"
-                            y="-7.5"
-                            width="76"
-                            height="15"
-                            rx="4"
+                            x="-45"
+                            y="-9.5"
+                            width="90"
+                            height="19"
+                            rx="5"
                             fill="white"
-                            stroke={isLinkActive ? "#e2e8f0" : "transparent"}
-                            strokeWidth="1"
-                            opacity={isLinkActive ? 1 : 0.7}
+                            stroke={isLinkActive ? "#64748b" : "#e2e8f0"}
+                            strokeWidth={isLinkActive ? "2" : "1"}
+                            className="shadow-sm"
                           />
                           <text
                             textAnchor="middle"
-                            y="3"
-                            fontSize="8"
-                            fontWeight={isLinkActive ? "900" : "700"}
-                            fill={isLinkActive ? "#64748b" : "#cbd5e1"}
-                            className="uppercase tracking-widest transition-colors duration-300"
+                            y="4"
+                            fontSize="10"
+                            fontWeight="900"
+                            fill={isLinkActive ? "#0f172a" : "#64748b"}
+                            className="uppercase tracking-tight transition-colors duration-300"
                           >
                             {subnet}
                           </text>
@@ -630,22 +630,22 @@ const App = () => {
                       )}
                       <g transform={`translate(${p1x}, ${p1y})`} className="transition-all duration-500">
                         <rect
-                          x="-32"
-                          y="-7"
-                          width="64"
-                          height="14"
-                          rx="3"
+                          x="-42"
+                          y="-9.5"
+                          width="84"
+                          height="19"
+                          rx="5"
                           fill={isLinkActive ? "#eff6ff" : "white"}
-                          stroke={isLinkActive ? "#bfdbfe" : "transparent"}
-                          strokeWidth="1"
-                          opacity={isLinkActive ? 1 : 0.8}
+                          stroke={isLinkActive ? "#2563eb" : "#bfdbfe"}
+                          strokeWidth={isLinkActive ? "2" : "1"}
+                          className="shadow-sm"
                         />
                         <text
                           textAnchor="middle"
-                          y="3"
-                          fontSize="8"
-                          fontWeight={isLinkActive ? "900" : "600"}
-                          fill={isLinkActive ? "#2563eb" : "#94a3b8"}
+                          y="4"
+                          fontSize="10.5"
+                          fontWeight="900"
+                          fill={isLinkActive ? "#1d4ed8" : "#2563eb"}
                           fontFamily="monospace"
                           className="transition-colors duration-300"
                         >
@@ -654,22 +654,22 @@ const App = () => {
                       </g>
                       <g transform={`translate(${p2x}, ${p2y})`} className="transition-all duration-500">
                         <rect
-                          x="-32"
-                          y="-7"
-                          width="64"
-                          height="14"
-                          rx="3"
+                          x="-42"
+                          y="-9.5"
+                          width="84"
+                          height="19"
+                          rx="5"
                           fill={isLinkActive ? "#eff6ff" : "white"}
-                          stroke={isLinkActive ? "#bfdbfe" : "transparent"}
-                          strokeWidth="1"
-                          opacity={isLinkActive ? 1 : 0.8}
+                          stroke={isLinkActive ? "#2563eb" : "#bfdbfe"}
+                          strokeWidth={isLinkActive ? "2" : "1"}
+                          className="shadow-sm"
                         />
                         <text
                           textAnchor="middle"
-                          y="3"
-                          fontSize="8"
-                          fontWeight={isLinkActive ? "900" : "600"}
-                          fill={isLinkActive ? "#2563eb" : "#94a3b8"}
+                          y="4"
+                          fontSize="10.5"
+                          fontWeight="900"
+                          fill={isLinkActive ? "#1d4ed8" : "#2563eb"}
                           fontFamily="monospace"
                           className="transition-colors duration-300"
                         >
