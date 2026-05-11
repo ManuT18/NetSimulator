@@ -917,18 +917,6 @@ const App = () => {
         </div>
       </footer>
 
-      {/* Floating Control Menu */}
-      <div className="fixed bottom-12 right-12 z-50 flex flex-col gap-3 p-3 bg-black/90 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 opacity-80 hover:opacity-100 transition-opacity">
-        <div className="p-2 text-white/40 hover:text-white transition-colors cursor-pointer">
-          <Share2 size={22} />
-        </div>
-        <div className="p-2 text-white/40 hover:text-white transition-colors cursor-pointer">
-          <Move size={22} />
-        </div>
-        <div className="p-2 text-white/40 hover:text-white transition-colors cursor-pointer border-t border-white/5 pt-3 mt-1">
-          <Activity size={22} />
-        </div>
-      </div>
 
       {/* Modales de Laboratorio */}
       {showEncapModal && (
