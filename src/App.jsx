@@ -234,15 +234,17 @@ const App = () => {
     return null;
   };
 
+  const [arpVisible, setArpVisible] = useState(false);
+
   const nextStep = () => {
     if (!simStep) return;
 
     if (simStep.phase === "discovery") {
+      setArpVisible(false);
       setSimStep({ ...simStep, phase: "response" });
     } else if (simStep.phase === "response") {
       setSimStep({ ...simStep, phase: "data" });
     } else if (simStep.phase === "finished") {
-      // Cerrar el analizador
       setSimStep(null);
     } else if (simStep.index < simStep.path.length - 2) {
       setSimStep({
@@ -251,7 +253,6 @@ const App = () => {
         phase: "discovery",
       });
     } else {
-      // Llegamos al destino final, no iniciamos nuevo descubrimiento
       setSimStep({
         ...simStep,
         index: simStep.index + 1,
@@ -259,6 +260,15 @@ const App = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (simStep?.phase === "discovery") {
+      const timer = setTimeout(() => setArpVisible(true), 50);
+      return () => clearTimeout(timer);
+    } else {
+      setArpVisible(false);
+    }
+  }, [simStep?.phase, simStep?.index]);
 
   const addNode = (type) => {
     const id = Date.now();
@@ -825,12 +835,12 @@ const App = () => {
                       return (
                         <g 
                           key={`arp-${neighbor.id}`} 
-                          transform={`translate(${neighbor.x}, ${neighbor.y})`} 
-                          style={{
-                            '--start-x': `${sourceNode.x - neighbor.x}px`,
-                            '--start-y': `${sourceNode.y - neighbor.y}px`,
-                          }}
-                          className="animate-broadcast-packet"
+                          transform={arpVisible 
+                            ? `translate(${neighbor.x}, ${neighbor.y})` 
+                            : `translate(${sourceNode.x}, ${sourceNode.y})`
+                          }
+                          className="transition-all duration-1000 cubic-bezier(0.4, 0, 0.2, 1)"
+                          style={{ opacity: arpVisible ? 1 : 0 }}
                         >
                           <circle r="18" fill="#eab308" opacity="0.2" className="animate-ping" />
                           <circle r="10" fill="#eab308" className="shadow-lg border-2 border-white" />
